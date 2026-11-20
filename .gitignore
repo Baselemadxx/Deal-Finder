@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# Next.js & TypeScript build artifacts
+.next/
+out/
+build/
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# Local data & environment secrets (keep .env.example tracked)
+.data/
+.env
+.env.*
+!.env.example
+
+# Logs & OS
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/

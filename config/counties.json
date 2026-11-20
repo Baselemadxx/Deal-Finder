@@ -1,0 +1,172 @@
+{
+  "$schema": "./counties.schema.json",
+  "version": 1,
+  "description": "Master county and data-source configuration. Set enabled: true on any Ohio or Florida county to activate its built-in adapters.",
+  "crossStateSources": {
+    "govInventory": {
+      "enabled": false,
+      "disabledReason": "hudhomestore.gov disallows automated access via robots.txt; HomePath, HomeSteps, and USDA Resales are client-side JS apps that return empty HTML shells to plain HTTP+cheerio (no free official public JSON/CSV feed available). Disabled so no source pretends to be green.",
+      "sources": []
+    }
+  },
+  "counties": [
+    {
+      "id": "ga-fulton",
+      "state": "GA",
+      "county": "Fulton",
+      "enabled": true,
+      "adapters": [
+        "ga-public-notice",
+        "ga-county-tax-sale",
+        "ga-qpublic-enrichment"
+      ],
+      "sourceConfig": {
+        "gaPublicNoticeCountyName": "Fulton",
+        "taxSaleUrl": "https://fultoncountytaxes.org/property-taxes/tax-sales/",
+        "qPublicBaseUrl": "https://qpublic.schneidercorp.com/Application.aspx?AppID=936&LayerID=18251&PageTypeID=2"
+      }
+    },
+    {
+      "id": "ga-dekalb",
+      "state": "GA",
+      "county": "DeKalb",
+      "enabled": true,
+      "adapters": [
+        "ga-public-notice",
+        "ga-county-tax-sale",
+        "ga-qpublic-enrichment"
+      ],
+      "sourceConfig": {
+        "gaPublicNoticeCountyName": "DeKalb",
+        "taxSaleUrl": "https://dekalbtax.org/tax-sale-listing",
+        "qPublicBaseUrl": "https://qpublic.schneidercorp.com/Application.aspx?AppID=994&LayerID=20256&PageTypeID=2"
+      }
+    },
+    {
+      "id": "ga-gwinnett",
+      "state": "GA",
+      "county": "Gwinnett",
+      "enabled": true,
+      "adapters": [
+        "ga-public-notice",
+        "ga-county-tax-sale",
+        "ga-qpublic-enrichment"
+      ],
+      "sourceConfig": {
+        "gaPublicNoticeCountyName": "Gwinnett",
+        "taxSaleUrl": "https://gwinnetttaxcommissioner.publicaccessnow.com/PropertyTax/TaxSales.aspx",
+        "qPublicBaseUrl": "https://qpublic.schneidercorp.com/Application.aspx?AppID=1286&LayerID=40529&PageTypeID=2"
+      }
+    },
+    {
+      "id": "ga-cobb",
+      "state": "GA",
+      "county": "Cobb",
+      "enabled": true,
+      "adapters": [
+        "ga-public-notice",
+        "ga-county-tax-sale",
+        "ga-qpublic-enrichment"
+      ],
+      "sourceConfig": {
+        "gaPublicNoticeCountyName": "Cobb",
+        "taxSaleUrl": "https://www.cobbtax.org/property/tax_sale",
+        "qPublicBaseUrl": "https://qpublic.schneidercorp.com/Application.aspx?AppID=1051&LayerID=23951&PageTypeID=2"
+      }
+    },
+    {
+      "id": "ga-clayton",
+      "state": "GA",
+      "county": "Clayton",
+      "enabled": true,
+      "adapters": [
+        "ga-public-notice",
+        "ga-qpublic-enrichment"
+      ],
+      "sourceConfig": {
+        "gaPublicNoticeCountyName": "Clayton",
+        "disabledTaxSaleNote": "ga-county-tax-sale disabled for Clayton: www.claytoncountyga.gov/government/tax-commissioner/tax-sales/ is behind Sucuri/Cloudproxy WAF (HTTP 307 redirect loop), and publicaccess.claytoncountyga.gov requires an interactive ASP.NET disclaimer session. Clayton Tax Sales & Foreclosures are still covered by ga-public-notice.",
+        "qPublicBaseUrl": "https://qpublic.schneidercorp.com/Application.aspx?AppID=657&LayerID=11398&PageTypeID=2"
+      }
+    },
+    {
+      "id": "oh-franklin",
+      "state": "OH",
+      "county": "Franklin",
+      "enabled": false,
+      "adapters": [
+        "oh-sheriff-sale",
+        "oh-auditor-delinquent-tax"
+      ],
+      "sourceConfig": {
+        "sheriffSaleSubdomain": "franklin.sheriffsaleauction.ohio.gov",
+        "delinquentTaxUrl": "https://treasurer.franklincountyohio.gov/delinquent-taxes"
+      }
+    },
+    {
+      "id": "oh-cuyahoga",
+      "state": "OH",
+      "county": "Cuyahoga",
+      "enabled": false,
+      "adapters": [
+        "oh-sheriff-sale",
+        "oh-auditor-delinquent-tax"
+      ],
+      "sourceConfig": {
+        "sheriffSaleSubdomain": "cuyahoga.sheriffsaleauction.ohio.gov",
+        "delinquentTaxUrl": "https://myplace.cuyahogacounty.gov/"
+      }
+    },
+    {
+      "id": "fl-miami-dade",
+      "state": "FL",
+      "county": "Miami-Dade",
+      "enabled": false,
+      "adapters": [
+        "fl-realforeclose",
+        "fl-clerk-lis-pendens",
+        "fl-lienhub-tax"
+      ],
+      "sourceConfig": {
+        "realForecloseSubdomain": "miamidade.realforeclose.com",
+        "clerkOfficialRecordsUrl": "https://onlineservices.miamidadeclerk.gov/officialrecords/",
+        "lienHubCountySlug": "miamidade",
+        "taxDeedSubdomain": "miamidade.realtaxdeed.com"
+      }
+    },
+    {
+      "id": "fl-orange",
+      "state": "FL",
+      "county": "Orange",
+      "enabled": false,
+      "adapters": [
+        "fl-realforeclose",
+        "fl-clerk-lis-pendens",
+        "fl-lienhub-tax"
+      ],
+      "sourceConfig": {
+        "realForecloseSubdomain": "myorangeclerk.realforeclose.com",
+        "clerkOfficialRecordsUrl": "https://or.occompt.com/",
+        "lienHubCountySlug": "orange",
+        "taxDeedSubdomain": "orange.realtaxdeed.com"
+      }
+    },
+    {
+      "id": "fl-hillsborough",
+      "state": "FL",
+      "county": "Hillsborough",
+      "enabled": false,
+      "adapters": [
+        "fl-realforeclose",
+        "fl-clerk-lis-pendens",
+        "fl-lienhub-tax"
+      ],
+      "sourceConfig": {
+        "realForecloseSubdomain": "hillsborough.realforeclose.com",
+        "clerkOfficialRecordsUrl": "https://publicaccess.hillsclerk.com/oripublicaccess/",
+        "lienHubCountySlug": "hillsborough",
+        "taxDeedSubdomain": "hillsborough.realtaxdeed.com"
+      }
+    }
+  ]
+}

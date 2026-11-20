@@ -1,0 +1,69 @@
+name: Daily Distress Deal Scan
+
+on:
+  schedule:
+    # Runs every day at 11:00 UTC (6:00 AM EST / 7:00 AM EDT)
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no DB writes, no real emails)'
+        required: false
+        default: 'false'
+        type: boolean
+
+concurrency:
+  group: daily-distress-scan
+  cancel-in-progress: false
+
+jobs:
+  daily-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      DEMO_MODE: 'false'
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      EMAIL_PROVIDER: ${{ secrets.EMAIL_PROVIDER }}
+      ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+      ALERT_EMAIL_FROM: ${{ secrets.ALERT_EMAIL_FROM }}
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      HIGH_SCORE_ALERT_THRESHOLD: ${{ secrets.HIGH_SCORE_ALERT_THRESHOLD }}
+      SCRAPER_DELAY_MS: ${{ secrets.SCRAPER_DELAY_MS }}
+      DRY_RUN: ${{ inputs.dry_run || 'false' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify required configuration
+        run: npm run health-check
+
+      - name: Run daily autonomous scan
+        id: scan
+        run: npm run scan
+
+      # =========================================================================
+      # IRONCLAD NO-SILENT-FAILURE FALLBACK
+      # If ANY step above crashes (npm ci, missing env vars, OOM, unhandled error)
+      # before the scan runner could send its own email, this step ALWAYS fires
+      # an emergency error report email with the direct GitHub Actions run link.
+      # =========================================================================
+      - name: Send emergency crash alert if workflow failed before emailing
+        if: failure() && env.DRY_RUN != 'true'
+        env:
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          FAILED_WORKFLOW: ${{ github.workflow }}
+        run: node scripts/send-crash-alert.mjs
